@@ -6,12 +6,12 @@ export async function DashboardTitle() {
   const title = user.firstName ? `${user.firstName}’s Dashboard` : "Your dashboard"
 
   return (
-    <h1 className="text-center text-2xl font-semibold text-foreground">
+    <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
       {title}
     </h1>
   )
 }
 
 export function DashboardTitleSkeleton() {
-  return <Skeleton className="mx-auto h-8 w-56" />
+  return <Skeleton className="h-10 w-64" />
 }

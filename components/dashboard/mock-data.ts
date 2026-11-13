@@ -1,4 +1,4 @@
-import type { Folder, StudySet, UploadFile } from "./types"
+import type { Folder, StudySet } from "./types"
 
 export const mockFolders: Folder[] = [
   { id: "physiology", name: "Physiology", studySetCount: 3 },
@@ -81,20 +81,5 @@ export const mockStudySets: StudySet[] = [
     folderId: "organic-chemistry",
     status: "ready",
     lastActivity: { kind: "studied", at: "2026-10-20T09:00:00Z", label: "Oct 20" },
-  },
-]
-
-export const mockUploadFiles: UploadFile[] = [
-  {
-    id: "mock-file-1",
-    name: "Lecture 7 - Cardiac cycle.pdf",
-    size: 2_480_000,
-    status: "ready",
-  },
-  {
-    id: "mock-file-2",
-    name: "Week 7 slides.pptx",
-    size: 8_920_000,
-    status: "ready",
   },
 ]

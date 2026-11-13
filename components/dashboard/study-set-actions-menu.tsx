@@ -8,6 +8,7 @@ import {
   PencilIcon,
   Trash2Icon,
 } from "lucide-react"
+import { AppTooltip } from "@/components/app-tooltip"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,17 +30,20 @@ type StudySetActionsMenuProps = {
 export function StudySetActionsMenu({ studySet, folders }: StudySetActionsMenuProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon-lg"
-            aria-label={`More actions for ${studySet.title}`}
-          />
-        }
-      >
-        <MoreHorizontalIcon aria-hidden="true" />
-      </DropdownMenuTrigger>
+      <AppTooltip label="More actions">
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              aria-label={`More actions for ${studySet.title}`}
+              className="text-muted-foreground hover:text-foreground aria-expanded:text-foreground"
+            />
+          }
+        >
+          <MoreHorizontalIcon aria-hidden="true" />
+        </DropdownMenuTrigger>
+      </AppTooltip>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem>
           <PencilIcon aria-hidden="true" />

@@ -1,8 +1,8 @@
 import { Suspense } from "react"
-import Link from "next/link"
 import { getCurrentUser } from "@/lib/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { SidebarToggle } from "@/components/sidebar-toggle"
 
 async function ProfileAvatar() {
   const user = await getCurrentUser()
@@ -10,9 +10,9 @@ async function ProfileAvatar() {
   const initial = (user.firstName || user.email || "?").charAt(0).toUpperCase()
 
   return (
-    <Avatar size="lg" role="img" aria-label={displayName}>
+    <Avatar role="img" aria-label={displayName} className="size-9">
       {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-      <AvatarFallback className="bg-accent font-medium text-accent-foreground">
+      <AvatarFallback className="bg-accent text-sm font-semibold text-accent-foreground">
         {initial}
       </AvatarFallback>
     </Avatar>
@@ -21,21 +21,13 @@ async function ProfileAvatar() {
 
 export function DashboardNavbar() {
   return (
-    <header className="border-b border-border bg-card">
-      <nav
-        aria-label="Main"
-        className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
-      >
-        <Link
-          href="/dashboard"
-          className="rounded-md text-lg font-semibold text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          Revix AI
-        </Link>
-        <Suspense fallback={<Skeleton className="size-10 rounded-full" />}>
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-3 sm:px-4">
+      <SidebarToggle />
+      <div className="ml-auto">
+        <Suspense fallback={<Skeleton className="size-9 rounded-full" />}>
           <ProfileAvatar />
         </Suspense>
-      </nav>
+      </div>
     </header>
   )
 }

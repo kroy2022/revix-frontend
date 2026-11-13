@@ -21,12 +21,17 @@ type Notification = {
 const callbackErrors: Record<string, Notification> = {
     profile: {
         type: "error",
-        title: "Profile creation failed",
-        description: "Your Google account was authenticated, but we couldn't create your user profile. Please try again.",
+        title: "Profile not found",
+        description: "We couldn't load your user profile. Please sign in again or create an account.",
+    },
+    no_account: {
+        type: "info",
+        title: "No account found",
+        description: "There's no Revix account for this Google account yet. Create one to get started.",
     },
     oauth: {
         type: "error",
-        title: "Google sign up failed",
+        title: "Google sign in failed",
         description: "We couldn't authenticate your Google account. Please try again.",
     },
 };
@@ -58,14 +63,14 @@ export default function Signin() {
     const [notification, setNotification] = useState<Notification | null>(null);
     const [isRedirecting, setIsRedirecting] = useState(false);
 
-    const handleSignUp = async () => {
+    const handleSignIn = async () => {
         setNotification(null);
         setIsRedirecting(true);
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `${window.location.origin}/auth/signin/callback`,
             },
         })
 
@@ -88,18 +93,18 @@ export default function Signin() {
                 </p>
 
                 <section
-                    aria-labelledby="signup-heading"
+                    aria-labelledby="signin-heading"
                     className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-6 sm:p-8"
                 >
                     <div className="flex flex-col gap-2 text-center">
                         <h1
-                            id="signup-heading"
+                            id="signin-heading"
                             className="text-2xl font-semibold text-card-foreground"
                         >
-                            Create your account
+                            Welcome back
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Sign up with your Google account to get started.
+                            Sign in with your Google account to continue.
                         </p>
                     </div>
 
@@ -112,19 +117,19 @@ export default function Signin() {
                     )}
 
                     <GoogleButton
-                        label="Sign up with Google"
+                        label="Sign in with Google"
                         loading={isRedirecting}
-                        onClick={handleSignUp}
+                        onClick={handleSignIn}
                     />
                 </section>
 
                 <p className="text-center text-sm text-muted-foreground">
-                    Already have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link
-                        href="/signin"
+                        href="/signup"
                         className="rounded-sm font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
-                        Sign in
+                        Sign up
                     </Link>
                 </p>
             </div>

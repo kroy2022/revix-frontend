@@ -30,7 +30,7 @@ export function SearchField({ label, value, onValueChange, className, id, ...pro
         type="search"
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
-        className="h-10 bg-card pl-9"
+        className="h-10 border-border bg-card pl-9 shadow-raised"
         {...props}
       />
     </div>

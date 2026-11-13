@@ -3,6 +3,7 @@
 import * as React from "react"
 import { UploadIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { hasDraggedFiles } from "./upload-files"
 
 const ACCEPTED_FILE_TYPES = [
   ".pdf",
@@ -24,6 +25,7 @@ export function FileDropzone({ onFilesSelected, disabled }: FileDropzoneProps) {
   const [isDragging, setIsDragging] = React.useState(false)
 
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    if (!hasDraggedFiles(event)) return
     event.preventDefault()
     if (!disabled) setIsDragging(true)
   }
@@ -54,29 +56,31 @@ export function FileDropzone({ onFilesSelected, disabled }: FileDropzoneProps) {
       data-dragging={isDragging || undefined}
       aria-disabled={disabled || undefined}
       className={cn(
-        "flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-input bg-background px-6 py-12 text-center transition-colors duration-150",
-        "data-dragging:border-primary data-dragging:bg-accent",
-        "aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
+        "flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-accent-border bg-card px-6 py-12 text-center transition-[background-color,border-color] duration-150",
+        "hover:border-primary/50 data-dragging:border-primary data-dragging:bg-accent",
+        "aria-disabled:cursor-not-allowed aria-disabled:opacity-60 aria-disabled:hover:border-accent-border"
       )}
     >
-      <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
+      <span className="flex size-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
         <UploadIcon className="size-5" aria-hidden="true" />
       </span>
-      <p className="text-base text-foreground">
-        Drop your lecture files here or{" "}
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={disabled}
-          aria-describedby={hintId}
-          className="rounded-sm font-medium text-primary underline underline-offset-4 outline-none hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none"
-        >
-          browse files
-        </button>
-      </p>
-      <p id={hintId} className="text-sm text-muted-foreground">
-        PDF, PPTX, or DOCX · Up to 5 files
-      </p>
+      <div className="flex flex-col gap-1">
+        <p className="text-base font-medium text-foreground">
+          Drop your lecture files here or{" "}
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={disabled}
+            aria-describedby={hintId}
+            className="rounded-sm text-primary underline decoration-accent-border decoration-2 underline-offset-4 outline-none transition-colors duration-150 hover:text-primary-hover hover:decoration-primary focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none"
+          >
+            browse files
+          </button>
+        </p>
+        <p id={hintId} className="text-sm text-muted-foreground">
+          PDF, PPTX, or DOCX · Up to 5 files
+        </p>
+      </div>
       <input
         ref={inputRef}
         type="file"

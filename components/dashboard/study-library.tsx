@@ -15,7 +15,7 @@ export function StudyLibrary({ folders, studySets }: StudyLibraryProps) {
   const selectedFolder = folders.find((folder) => folder.id === selectedFolderId) ?? null
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <FolderBar
         folders={folders}
         totalStudySets={studySets.length}

@@ -3,11 +3,12 @@
 import * as React from "react"
 import { FolderIcon, FolderPlusIcon, LayersIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { SectionHeader } from "@/components/section-header"
 import type { Folder } from "./types"
 
 const COLLAPSED_FOLDER_COUNT = 4
 
-type FolderButtonProps = {
+type FolderTileProps = {
   icon: React.ReactNode
   name: string
   count: number
@@ -15,23 +16,25 @@ type FolderButtonProps = {
   onClick: () => void
 }
 
-function FolderButton({ icon, name, count, selected, onClick }: FolderButtonProps) {
+function FolderTile({ icon, name, count, selected, onClick }: FolderTileProps) {
   return (
-    <Button
+    <button
       type="button"
-      variant="outline"
       aria-pressed={selected}
       onClick={onClick}
       title={name}
-      className="h-10 max-w-full gap-2 bg-card px-3 aria-pressed:border-accent-border aria-pressed:bg-accent aria-pressed:text-accent-foreground aria-pressed:hover:bg-accent-hover"
+      className="group flex min-w-0 items-center gap-3 rounded-xl border border-border bg-card p-3 text-left shadow-raised outline-none transition-[background-color,border-color,box-shadow] duration-150 hover:border-accent-border hover:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:border-primary aria-pressed:bg-accent aria-pressed:ring-1 aria-pressed:ring-primary"
     >
-      {icon}
-      <span className="min-w-0 truncate sm:max-w-48">{name}</span>
-      <span className="text-muted-foreground group-aria-pressed/button:text-accent-foreground">
-        {count}
-        <span className="sr-only"> {count === 1 ? "study set" : "study sets"}</span>
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors duration-150 group-aria-pressed:bg-primary group-aria-pressed:text-primary-foreground [&_svg]:size-4">
+        {icon}
       </span>
-    </Button>
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate text-sm font-medium text-foreground">{name}</span>
+        <span className="text-sm text-muted-foreground tabular-nums group-aria-pressed:text-accent-foreground">
+          {count} {count === 1 ? "set" : "sets"}
+        </span>
+      </span>
+    </button>
   )
 }
 
@@ -43,30 +46,46 @@ type FolderBarProps = {
 }
 
 export function FolderBar({ folders, totalStudySets, selectedFolderId, onSelectFolder }: FolderBarProps) {
-  const listId = React.useId()
+  const gridId = React.useId()
   const [isExpanded, setIsExpanded] = React.useState(false)
   const hasOverflow = folders.length > COLLAPSED_FOLDER_COUNT
   const visibleFolders = isExpanded ? folders : folders.slice(0, COLLAPSED_FOLDER_COUNT)
 
   return (
-    <section aria-labelledby="folders-heading" className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-4">
-        <h2 id="folders-heading" className="text-lg font-semibold text-foreground">
-          Folders
-        </h2>
-        <Button type="button" variant="ghost" className="h-9 px-3">
-          <FolderPlusIcon aria-hidden="true" />
-          New folder
-        </Button>
-      </div>
+    <section aria-labelledby="folders-heading" className="flex flex-col gap-4">
+      <SectionHeader
+        id="folders-heading"
+        title="Folders"
+        className="sm:items-center"
+        actions={
+          <>
+            {hasOverflow && (
+              <Button
+                type="button"
+                variant="ghost"
+                aria-expanded={isExpanded}
+                aria-controls={gridId}
+                onClick={() => setIsExpanded((expanded) => !expanded)}
+                className="h-9 px-3 text-primary hover:bg-accent hover:text-accent-foreground aria-expanded:bg-transparent aria-expanded:text-primary aria-expanded:hover:bg-accent"
+              >
+                {isExpanded ? "Show fewer" : `View all (${folders.length})`}
+              </Button>
+            )}
+            <Button type="button" variant="outline" className="h-9 px-3">
+              <FolderPlusIcon aria-hidden="true" />
+              New folder
+            </Button>
+          </>
+        }
+      />
 
       <div
-        id={listId}
+        id={gridId}
         role="group"
         aria-label="Filter study sets by folder"
-        className="flex flex-wrap items-center gap-2"
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
       >
-        <FolderButton
+        <FolderTile
           icon={<LayersIcon aria-hidden="true" />}
           name="All sets"
           count={totalStudySets}
@@ -74,7 +93,7 @@ export function FolderBar({ folders, totalStudySets, selectedFolderId, onSelectF
           onClick={() => onSelectFolder(null)}
         />
         {visibleFolders.map((folder) => (
-          <FolderButton
+          <FolderTile
             key={folder.id}
             icon={<FolderIcon aria-hidden="true" />}
             name={folder.name}
@@ -83,18 +102,6 @@ export function FolderBar({ folders, totalStudySets, selectedFolderId, onSelectF
             onClick={() => onSelectFolder(folder.id)}
           />
         ))}
-        {hasOverflow && (
-          <Button
-            type="button"
-            variant="ghost"
-            aria-expanded={isExpanded}
-            aria-controls={listId}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-            className="h-10 px-3 text-primary hover:text-accent-foreground aria-expanded:bg-transparent aria-expanded:text-primary aria-expanded:hover:bg-muted"
-          >
-            {isExpanded ? "Show fewer" : `View all (${folders.length})`}
-          </Button>
-        )}
       </div>
     </section>
   )
